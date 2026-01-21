@@ -11,7 +11,7 @@ function CommentSection({ comicSlug }) {
     const currentUser = JSON.parse(localStorage.getItem('user'));
 
     // Đảm bảo đúng Port Server của bạn (5000)
-    const API_URL = 'http://localhost:5000/api/comments';
+    const API_URL = 'https://web-truyen-server.onrender.com/api/comments';
 
     // 1. Load danh sách bình luận khi vào truyện
     useEffect(() => {
