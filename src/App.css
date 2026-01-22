@@ -149,3 +149,10 @@ a { text-decoration: none; color: inherit; }
     background: #61dafb;
     color: #000;
 }
+
+
+img {
+    display: block;  /* Xóa khoảng trắng dòng */
+    vertical-align: middle; /* Căn chỉnh lại trục dọc */
+    margin-bottom: -1px; /* Mẹo kéo ảnh dưới đè lên khe hở */
+}

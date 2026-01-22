@@ -29,10 +29,10 @@ function Chapter() {
                 // Gọi API lấy ảnh
                 const res = await axiosClient.get(`/chapter?url=${chapterUrl}`);
                 setImages(res.data.data.images);
-                
+
                 // Lưu lịch sử
                 saveHistory();
-                
+
                 // Cuộn lên đầu trang mỗi khi đổi chương
                 window.scrollTo(0, 0);
             } catch (error) {
@@ -52,7 +52,7 @@ function Chapter() {
             try {
                 const res = await axiosClient.get(`/${comicSlug}`);
                 // API trả về danh sách chương (thường nằm trong mảng server_data)
-                const list = res.data.data.chapters; 
+                const list = res.data.data.chapters;
                 setChapters(list);
             } catch (error) {
                 console.error("Lỗi lấy danh sách chương");
@@ -95,8 +95,8 @@ function Chapter() {
     };
 
     return (
-        <div className="reader-container" style={{background: '#111', minHeight: '100vh', paddingBottom: '50px'}}>
-            
+        <div className="reader-container" style={{ background: '#111', minHeight: '100vh', paddingBottom: '50px' }}>
+
             {/* --- THANH ĐIỀU HƯỚNG TRÊN CÙNG --- */}
             <div className="reader-header" style={{
                 position: 'sticky',     // [QUAN TRỌNG] Thay đổi từ fixed -> sticky
@@ -104,28 +104,28 @@ function Chapter() {
                 zIndex: 1000,           // Đè lên ảnh
                 background: '#222',     // Màu nền đục (không trong suốt) để che ảnh khi cuộn qua
                 borderBottom: '1px solid #333', // Thêm viền nhẹ cho tách biệt
-                padding: '10px 20px',   
-                display: 'flex', 
-                justifyContent: 'space-between', 
+                padding: '10px 20px',
+                display: 'flex',
+                justifyContent: 'space-between',
                 alignItems: 'center',
                 boxShadow: '0 2px 5px rgba(0,0,0,0.5)'
             }}>
-                <button onClick={() => navigate(-1)} style={{background:'none', border:'none', color:'white', cursor:'pointer', fontSize:'16px'}}>
+                <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '16px' }}>
                     ⬅ Quay lại
                 </button>
-                
-                <h3 style={{fontSize: '14px', margin: 0, maxWidth: '50%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+
+                <h3 style={{ fontSize: '14px', margin: 0, maxWidth: '50%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {chapterName}
                 </h3>
 
                 {/* Dropdown chọn nhanh chương */}
-                <select 
-                    value={chapterUrl} 
+                <select
+                    value={chapterUrl}
                     onChange={(e) => {
                         const selectedChap = chapters.find(c => c.apiPath === e.target.value);
-                        if(selectedChap) goToChapter(selectedChap);
+                        if (selectedChap) goToChapter(selectedChap);
                     }}
-                    style={{maxWidth: '100px', background:'#333', color:'white', border:'1px solid #555', padding:'5px'}}
+                    style={{ maxWidth: '100px', background: '#333', color: 'white', border: '1px solid #555', padding: '5px' }}
                 >
                     {chapters.map((chap) => (
                         <option key={chap.id} value={chap.apiPath}>
@@ -134,63 +134,69 @@ function Chapter() {
                     ))}
                 </select>
             </div>
-            
-            {/* --- NỘI DUNG ẢNH --- */}
-            <div className="pages" style={{maxWidth: '800px', margin: '0 auto'}}>
-                {loading && <div className="loading" style={{color:'white', textAlign:'center', padding:'20px'}}>Đang tải ảnh...</div>}
-                
+
+            {/* --- NỘI DUNG ẢNH (Đã sửa lỗi vạch trắng) --- */}
+            <div className="pages" style={{ maxWidth: '800px', margin: '0 auto', lineHeight: 0 }}>
+                {/* Thêm lineHeight: 0 vào thẻ cha để chắc chắn hơn */}
+
+                {loading && <div className="loading" style={{ color: 'white', textAlign: 'center', padding: '20px' }}>Đang tải ảnh...</div>}
+
                 {!loading && images.map((img, index) => (
-                    <img key={index} /* 2. SỬA DÒNG SRC NÀY */
-                        /* Cũ: src={img} */
-                        /* Mới: bọc nó lại như bên dưới (1000 là độ rộng ảnh) */
-                        src={getOptimizedUrl(img, 1000)} 
-                        
-                        alt={`page-${index}`} 
-                        loading="lazy" 
-                        style={{width: '100%', display: 'block'}} />
+                    <img key={index}
+                        src={getOptimizedUrl(img, 1000)}
+                        alt={`page-${index}`}
+                        loading="lazy"
+                        style={{
+                            width: '100%',
+                            display: 'block',       // 1. Loại bỏ khoảng trắng dòng
+                            margin: 0,              // 2. Xóa lề thừa
+                            padding: 0,             // 3. Xóa đệm thừa
+                            marginBottom: '-1px'    // 4. TUYỆT CHIÊU: Kéo ảnh dưới lên 1px để lấp kín khe hở
+                        }}
+                    />
                 ))}
             </div>
 
             {/* --- THANH ĐIỀU HƯỚNG DƯỚI CÙNG (Đã sửa logic) --- */}
             {!loading && (
-                <div className="navigation-buttons" style={{display:'flex', justifyContent:'center', gap:'15px', margin:'30px 0'}}>
-                    
+                <div className="navigation-buttons" style={{ display: 'flex', justifyContent: 'center', gap: '15px', margin: '30px 0' }}>
+
                     {/* Nút Chương Trước */}
                     {/* Logic cũ: index + 1. Logic mới: đổi thành index - 1 (hoặc ngược lại tùy data của bạn) */}
                     {/* Ở đây mình ĐẢO code so với lúc nãy: */}
                     {/* Nút Chương Sau */}
                     {currentChapterIndex > 0 && (
-                        <button 
+                        <button
                             // Đổi logic thành lấy chương phía trước trong mảng
                             onClick={() => goToChapter(chapters[currentChapterIndex - 1])}
-                            style={{padding:'10px 20px', background:'#61dafb', color:'black', border:'none', borderRadius:'5px', cursor:'pointer', fontWeight:'bold'}}
+                            style={{ padding: '10px 20px', background: '#61dafb', color: 'black', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
                         >
                             ⬅ Chương trước
                         </button>
                     )}
 
                     {currentChapterIndex < chapters.length - 1 && (
-                        <button 
+                        <button
                             // Đổi logic thành lấy chương phía sau trong mảng
                             onClick={() => goToChapter(chapters[currentChapterIndex + 1])}
-                            style={{padding:'10px 20px', background:'#444', color:'white', border:'none', borderRadius:'5px', cursor:'pointer'}}
+                            style={{ padding: '10px 20px', background: '#444', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
                         >
-                             Chương sau ➡
+                            Chương sau ➡
                         </button>
                     )}
 
-                    
+
                 </div>
             )}
 
             {/* --- KHUNG BÌNH LUẬN --- */}
-            <div className="container" style={{maxWidth: '800px', marginTop: '50px', padding: '0 10px'}}>
-                 {/* Tái sử dụng Component Bình luận */}
+            <div className="container" style={{ maxWidth: '800px', marginTop: '50px', padding: '0 10px' }}>
+                {/* Tái sử dụng Component Bình luận */}
                 <CommentSection comicSlug={comicSlug} />
             </div>
 
         </div>
-        
+
     );
 }
 
