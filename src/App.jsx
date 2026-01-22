@@ -58,7 +58,7 @@ function App() {
             {/* KHU VỰC TRÁI: Logo + Nút Lịch sử */}
             <div style={{display:'flex', gap:'20px', alignItems:'center'}}>
                 <Link to="/" style={{textDecoration:'none', display: 'flex', alignItems: 'center'}}>
-                    <h1>🚀 Manga React</h1>
+                    <h1>Manga 24h</h1>
                 </Link>
                 <Link to="/lich-su" style={{color:'#ccc', fontWeight:'bold', fontSize:'14px', textDecoration:'none'}}>
                     🕒 Lịch sử
